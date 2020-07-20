@@ -1,0 +1,18 @@
+Package: unitModalReg
+Title: Unit Modal Parametric Regression Models
+Version: 0.1.0
+Authors@R: 
+    person(given = "André Felipe B.",
+           family = "Menezes",
+           role = c("aut", "cre"),
+           email = "andrefelipemaringa@gmail.com",
+           comment = c(ORCID = "0000-0002-3320-9834"))
+Description: A Collection of Parametric Modal Regressions Models for Bounded Data.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: stats, Formula, numDeriv
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.0
+Suggests: 
+    testthat

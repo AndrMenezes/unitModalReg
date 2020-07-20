@@ -1,0 +1,24 @@
+{
+    "id": "F27E3C5A",
+    "path": "~/unitModalReg/tests/testthat/test-hnp.R",
+    "project_path": "tests/testthat/test-hnp.R",
+    "type": "r_source",
+    "hash": "1003546662",
+    "contents": "",
+    "dirty": false,
+    "created": 1595269991049.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "cursorPosition": "14,48",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1595270003,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1595270003223,
+    "read_only": false,
+    "read_only_alternatives": []
+}
