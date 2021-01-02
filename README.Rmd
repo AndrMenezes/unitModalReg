@@ -1,0 +1,81 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# `unitModalReg`: A Collection of Parametric Modal Regressions Models for Bounded Data
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of `unitModalReg` is to provide tools for fitting parametric modal regression models
+for bounded response variables.
+
+
+## Installation
+
+You can install the development version from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("AndrMenezes/unitModalReg")
+```
+
+## Example
+
+The packages follows the structure of `glm` objects. The main function is `unitModalReg`.
+
+```{r example, warning=FALSE}
+library(unitModalReg)
+
+# Simulate data
+n <- 500
+betas <- c(beta0 = 2, beta1 = -1, beta2 = 0.6)
+x1  <- runif(n)
+x2  <- rbinom(n, size = 1, prob = 0.65)
+eta <- betas[1] + betas[2] * x1 + betas[3] * x2
+mu  <- exp(eta) / exp(1 + eta)
+phi <- 4
+y   <- rugamma(n = n, mu = mu, phi = phi)
+data_sim <- data.frame(y = y, x1 = x1, x2 = factor(x2))
+
+# Families of distributions
+distr <- list(
+  Be = "betaMode",
+  UGz = "unitGompertz",
+  UGa = "unitGamma",
+  Kum = "Kumaraswamy"
+)
+
+# Fit the models
+fits <- lapply(distr, function(m) {
+  unitModalReg(y ~ x1 + x2, data = data_sim, family = m, link = "logit")
+})
+
+# Get the coefficients
+vapply(fits, coef, numeric(4))
+```
+
+We also implemented the `gof` function to compare the models based on the information criterion (AIC, BIC and HQIC)
+and [Voung test](https://en.wikipedia.org/wiki/Vuong's_closeness_test) for non-nested models.
+
+```{r}
+# Compare the models fitting
+gof(lt = fits)
+```
+
+
+The currently methods implemented are
+```{r methods}
+methods(class = "unitModalReg")
+```
