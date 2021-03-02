@@ -14,9 +14,9 @@ test_that("unitreg works", {
   m3 <- unitModalReg(y ~ x1, data = data, family = "GPB")
   m4 <- unitModalReg(y ~ x1, data = data, family = "unitGompertz")
 
-  expect_equal(length(m1), 14)
-  expect_equal(length(m2), 14)
-  expect_equal(length(m4), 14)
+  expect_equal(length(m1), 15)
+  expect_equal(length(m2), 15)
+  expect_equal(length(m3), 15)
 
 
 })
