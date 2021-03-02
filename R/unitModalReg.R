@@ -94,7 +94,7 @@ unitModalReg <- function(formula, data, family, link, start = NULL, control = un
   parms         <- fit$par[1:p]
   linkobj.mu    <- make.link(link)
   fitted.values <- linkobj.mu$linkinv(X %*% parms)
-
+  linear.predictors <- linkobj.mu$linkfun(fitted.values)
   # Output
   out <- list(
     call             = match.call(),
@@ -106,6 +106,7 @@ unitModalReg <- function(formula, data, family, link, start = NULL, control = un
     vcov             = vcov,
     coefficients     = fit$par,
     fitted.values    = c(fitted.values),
+    linear.predictors = c(linear.predictors),
     nobs             = length(y),
     npar             = length(fit$par),
     df.residual      = length(y) - length(fit$par),

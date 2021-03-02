@@ -69,10 +69,8 @@ summary.unitModalReg <- function(object, correlation = FALSE, ...) {
               loglik      = object$loglik,
               correlation = correlation,
               call        = object$call,
-              tau         = object$tau,
-              link.mu     = object$link$name,
-              link.phi    = object$link.phi$name,
-              model       = object$model,
+              link        = object$link$name,
+              family      = object$family,
               data        = object$data)
   class(out) <- "summary.unitModalReg"
   out
@@ -90,7 +88,7 @@ print.summary.unitModalReg <- function(x, digits = max(3, getOption("digits") - 
 
   cat("\nCall:  ", paste(deparse(x$call), sep = "\n", collapse = "\n"), "\n\n", sep = "")
 
-  cat("Mu coefficients (mode model with ", x$link$name, " link): \n", sep = "")
+  cat("Mu coefficients (mode model with ", x$link, " link): \n", sep = "")
   printCoefmat(x$coeftable[1:p, , drop = FALSE], digits = digits, has.Pvalue = TRUE)
   cat("\n")
 
@@ -210,4 +208,23 @@ print.gof <- function(x, ...) {
 }
 
 
+update.unitModalReg <- function(object, formula., ..., evaluate = TRUE)
+{
+  call <- object$call
+  if (is.null(call)) stop("need an object with call component")
+  extras <- match.call(expand.dots = FALSE)$...
+  if (!missing(formula.)) call$formula <- formula(update(Formula(formula(object)), formula.))
+  if (length(extras)) {
+    existing <- !is.na(match(names(extras), names(call)))
+    for (a in names(extras)[existing]) call[[a]] <- extras[[a]]
+    if (any(!existing)) {
+      call <- c(as.list(call), extras[!existing])
+      call <- as.call(call)
+    }
+  }
+  if(evaluate) eval(call, parent.frame())
+  else call
+}
+# library(Formula)
+# summary(update(m1, . ~ . - 1))
 
