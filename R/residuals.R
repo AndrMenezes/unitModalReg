@@ -9,33 +9,57 @@
 #' @param ... currently not used.
 #'
 #'
-#' @importFrom stats pbeta
+#' @importFrom stats pbeta predict
+#' @importFrom numDeriv grad
 #'
 
 #' @rdname residuals.unitModalReg
 #' @export
-residuals.unitModalReg <- function(object, type = c("cox-snell", "quantile"), ...) {
+residuals.unitModalReg <- function(object, type = c("cox-snell", "quantile",
+                                                    "pearson", "working",
+                                                    "response"), ...) {
 
   if (length(type) > 1) type = "quantile"
 
 
-  mu  <- object$fitted.values
-  y   <- object$data$y
-  phi <- object$coefficients
-  phi <- phi[length(phi)]
+  mu <- object$fitted.values
+  y <- object$data$y
+  parms <- object$coefficients
+  phi <- parms[length(parms)]
 
-  Fy <- switch (object$family,
-    "unitMaxwell" = pumaxwell(y, mu=mu),
-    "betaMode" = pbeta(y, shape1=mu * phi + 1, shape2=(1-mu) * phi + 1),
-    "unitGompertz" = pugompertz(y, mu=mu, phi=phi),
-    "unitGamma" = pugamma(y, mu=mu, phi=phi),
-    "Kumaraswamy" = pkum(y, mu=mu, phi=phi)
-  )
+  if (type %in% c("quantile", "cox-snell")) {
+    Fy <- switch (object$family,
+                  "unitMaxwell" = pumaxwell(y, mu=mu),
+                  "betaMode" = pbeta(y, shape1=mu * phi + 1, shape2=(1-mu) * phi + 1),
+                  "unitGompertz" = pugompertz(y, mu=mu, phi=phi),
+                  "unitGamma" = pugamma(y, mu=mu, phi=phi),
+                  "Kumaraswamy" = pkum(y, mu=mu, phi=phi)
+    )
+    res <- switch (type,
+                   "cox-snell" = -log(1-Fy),
+                   "quantile" =  qnorm(Fy)
+    )
+  }
+  if (type == "response") {
+    res <- y - mu
+  }
+  if (type %in% c("working", "partial")) {
+    link <- object$link
+    eta <- link$linkfun
+    d_eta_mu <- numDeriv::grad(func = eta, x = mu)
+    eta_hat <- eta(mu)
+    r <- (y - mu) * d_eta_mu
 
-  res <- switch (type,
-    "cox-snell" = -log(1-Fy),
-    "quantile" =  qnorm(Fy)
-  )
+    res <- switch (type,
+      "working" = r,
+      "partial" = r + predict(object, type = "terms")
+    )
 
-  res
+  }
+  if (type == "pearson") {
+    Vary <- compute_var(family = object$family, mu = mu, phi = phi)
+    res <- (y - mu) / sqrt(Vary)
+  }
+
+  return(res)
 }
