@@ -13,7 +13,8 @@
 #' @param level the confidence level required.
 #' @param ... additional argument(s) for methods. Currently not used.
 #'
-#' @importFrom stats qnorm pnorm cov2cor coef vcov printCoefmat
+#' @importFrom stats qnorm pnorm cov2cor coef vcov printCoefmat formula update
+#' @importFrom Formula Formula
 #'
 #' @name methods-unitModalReg
 NULL
@@ -207,7 +208,7 @@ print.gof <- function(x, ...) {
 
 }
 
-
+#' @export
 update.unitModalReg <- function(object, formula., ..., evaluate = TRUE)
 {
   call <- object$call
@@ -225,6 +226,3 @@ update.unitModalReg <- function(object, formula., ..., evaluate = TRUE)
   if(evaluate) eval(call, parent.frame())
   else call
 }
-# library(Formula)
-# summary(update(m1, . ~ . - 1))
-
