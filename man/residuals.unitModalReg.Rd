@@ -4,7 +4,11 @@
 \alias{residuals.unitModalReg}
 \title{Residuals Method for \code{unitModalReg} Objects}
 \usage{
-\method{residuals}{unitModalReg}(object, type = c("cox-snell", "quantile"), ...)
+\method{residuals}{unitModalReg}(
+  object,
+  type = c("cox-snell", "quantile", "pearson", "working", "response"),
+  ...
+)
 }
 \arguments{
 \item{object}{fitted model object of class \code{\link{unitModalReg}}.}
